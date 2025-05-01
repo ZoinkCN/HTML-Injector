@@ -1,0 +1,9 @@
+{
+    "name": "HTML Block Renderer",
+    "version": "1.0.0",
+    "author": "YourName",
+    "description": "Renders HTML code blocks when enabled in settings.",
+    "supportedDomains": ["*"],
+    "manifestVersion": 2,
+    "config": "config.html"
+  }

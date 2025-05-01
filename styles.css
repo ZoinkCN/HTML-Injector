@@ -1,0 +1,16 @@
+.rendered-html-block {
+    border: 1px solid #444;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  .html-renderer-config {
+    padding: 10px;
+  }
+  
+  .html-renderer-config .description {
+    color: orange;
+    font-size: 0.8em;
+  }
