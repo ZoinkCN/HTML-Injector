@@ -1,9 +1,12 @@
 {
-    "name": "HTML Block Renderer",
+    "display_name": "HTML Block Renderer",
+    "loading_order": 100,
+    "requires": [],
+    "optional": [],
+    "js": "script.js",
+    "css": "style.css",
+    "author": "zoink",
     "version": "1.0.0",
-    "author": "YourName",
-    "description": "Renders HTML code blocks when enabled in settings.",
-    "supportedDomains": ["*"],
-    "manifestVersion": 2,
-    "config": "config.html"
+    "homePage": "https://github.com/ZoinkCN/HTMLBlockRenderer",
+    "auto_update": true
   }
