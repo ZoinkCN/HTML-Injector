@@ -27,12 +27,12 @@ async function loadSettings() {
   }
 
   // Update UI with settings
-  $("#is_injection_enabled").prop("checked", extension_settings[extensionName].isInjectionEnabled);
-  $("#display_mode").val(extension_settings[extensionName].displayMode);
-  $("#activation_mode").val(extension_settings[extensionName].activationMode);
-  $("#custom_start_floor").val(extension_settings[extensionName].customStartFloor);
-  $("#custom_end_floor").val(extension_settings[extensionName].customEndFloor);
-  $("#extra_height").val(extension_settings[extensionName].extraHeight); // 加载 extraHeight
+  $("#isInjectionEnabled").prop("checked", extension_settings[extensionName].isInjectionEnabled);
+  $("#displayMode").val(extension_settings[extensionName].displayMode);
+  $("#activationMode").val(extension_settings[extensionName].activationMode);
+  $("#customStartFloor").val(extension_settings[extensionName].customStartFloor);
+  $("#customEndFloor").val(extension_settings[extensionName].customEndFloor);
+  $("#extraHeight").val(extension_settings[extensionName].extraHeight); // 加载 extraHeight
 }
 
 // Save a specific setting
@@ -201,12 +201,12 @@ jQuery(async () => {
   $("#extensions_settings").append(settingsHtml);
 
   // Bind event listeners
-  $("#is_injection_enabled").on("change", onEnabledChange);
-  $("#display_mode").on("change", onSettingChange);
-  $("#activation_mode").on("change", onSettingChange);
-  $("#custom_start_floor").on("input", onSettingChange);
-  $("#custom_end_floor").on("input", onSettingChange);
-  $("#extra_height").on("input", onSettingChange); // 监听 extraHeight 的变化
+  $("#isInjectionEnabled").on("change", onEnabledChange);
+  $("#displayMode").on("change", onSettingChange);
+  $("#activationMode").on("change", onSettingChange);
+  $("#customStartFloor").on("input", onSettingChange);
+  $("#customEndFloor").on("input", onSettingChange);
+  $("#extraHeight").on("input", onSettingChange); // 监听 extraHeight 的变化
 
   // Load settings
   loadSettings();
