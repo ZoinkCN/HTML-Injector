@@ -1,12 +1,11 @@
 {
-    "display_name": "HTML Block Renderer",
-    "loading_order": 100,
+    "display_name": "HTML Injector",
+    "loading_order": 9,
     "requires": [],
     "optional": [],
-    "js": "script.js",
-    "css": "styles.css",
-    "author": "zoink",
+    "js": "index.js",
+    "css": "style.css",
+    "author": "Zoink",
     "version": "1.0.0",
-    "homePage": "https://github.com/ZoinkCN/HTMLBlockRenderer",
-    "auto_update": true
-  }
+    "homePage": "https://github.com/ZoinkCN/HTMLBlockRenderer"
+}
