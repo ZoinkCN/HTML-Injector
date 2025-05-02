@@ -1,33 +1,66 @@
-# SillyTavern Extension Example
+# HTML Injector
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+HTML Injector 是一个为 SillyTavern 提供的扩展，由 [html代码注入器油猴脚本](https://greasyfork.org/zh-CN/scripts/503174-sillytavern-st%E9%85%92%E9%A6%86-html%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5%E5%99%A8) 修改而来，允许用户在聊天界面中动态注入和渲染 HTML 代码块。它旨在增强聊天界面的功能和可定制性，支持多种显示模式和动态内容更新。
 
-## Features
+---
 
-*Describe some of the main selling points of your extension.*
+## 🚀 功能
 
-## Installation and Usage
+- **HTML 注入**: 支持将 HTML 代码块动态注入到聊天界面中。
+- **多种显示模式**:
+  - 显示原始代码和渲染效果。
+  - 隐藏原始代码，仅显示渲染效果。
+  - 折叠原始代码，按需展开。
+- **动态监听**: 自动检测聊天内容的变化并实时更新注入的 HTML。
+- **全局音频管理**: 支持在注入的 HTML 中播放音频，并确保同一时间只有一个音频播放。
+- **自定义设置面板**: 提供用户友好的设置界面，支持调整显示模式、激活范围等选项。
 
-### Installation
+---
 
-*In most cases, this should just be using ST's inbuilt extension installer.* 
+## 🛠️ 安装与使用
 
-### Usage
+### 安装
 
-*Explain how to use this extension.*
+1. 打开 SillyTavern 的扩展管理器。
+2. 点击右上角的 “安装扩展”。
+3. 输入 https://github.com/ZoinkCN/HTML-Injector 下载。
+4. 安装完成后，确保扩展已启用。
 
-## Prerequisites
+### 使用
 
-*Specify the version of ST necessary here.*
+1. 在聊天界面中，输入包含 被 ``` 包裹的 HTML 代码块，例如：
 
-## Support and Contributions
+````
+```
+<div style="color: red;">Hello, World!</div>
+```
+````
 
-*Where should someone ask for support?*
+---
 
-*Consider including your own contact info for help/questions.*
+## ⚠️ 安全声明
 
-*How can people help add to this extension?*
+1. **HTML 注入的风险**:
+   - 请确保注入的 HTML 代码是可信的，避免使用来源不明或恶意的代码。
+   - 注入的 HTML 可能包含恶意脚本（如 `<script>` 标签），可能导致安全问题。
 
-## License
+2. **沙箱环境**:
+   - 本扩展会将注入的 HTML 代码运行在 `<iframe>` 中，以隔离潜在的安全风险。
+   - 即便如此，仍需谨慎对待注入的内容。
 
-*Be cool, use an open source license.*
+3. **用户责任**:
+   - 用户需对注入的 HTML 代码负责，开发者不对因使用本扩展导致的任何安全问题承担责任。
+
+---
+
+## 📋 注意事项
+
+- 本扩展仅用于增强 SillyTavern 的功能，请勿用于非法用途。
+- 如果发现任何安全漏洞或问题，请及时通过 [GitHub Issues](https://github.com/ZoinkCN/HTML-Injector/issues) 反馈。
+
+---
+
+## 🌟 感谢
+
+感谢 SillyTavern 社区的支持，以及所有为本项目提供反馈和建议的用户！
+

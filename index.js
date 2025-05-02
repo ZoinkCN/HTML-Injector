@@ -64,6 +64,34 @@ function onEnabledChange(event) {
   toggleHtmlInjection(value);
 }
 
+// 全局音频管理器
+function createGlobalAudioManager() {
+  let currentPlayingIframeId = null;
+
+  // 监听来自 iframe 的消息
+  window.addEventListener('message', function (event) {
+    if (event.data.type === 'audioPlay') {
+      const newIframeId = event.data.iframeId;
+
+      // 如果有其他 iframe 在播放音频，发送停止指令
+      if (currentPlayingIframeId && currentPlayingIframeId !== newIframeId) {
+        const currentIframe = document.getElementById(currentPlayingIframeId);
+        if (currentIframe) {
+          currentIframe.contentWindow.postMessage({ type: 'audioStop' }, '*');
+        }
+      }
+
+      // 更新当前播放的 iframe ID
+      currentPlayingIframeId = newIframeId;
+    } else if (event.data.type === 'audioStop') {
+      // 如果音频停止，清除当前播放的 iframe ID
+      if (event.data.iframeId === currentPlayingIframeId) {
+        currentPlayingIframeId = null;
+      }
+    }
+  });
+}
+
 function toggleHtmlInjection(value) {
   if (value) {
     injectHtmlCode();
@@ -272,4 +300,5 @@ jQuery(async () => {
 
   // Load settings
   loadSettings();
+  createGlobalAudioManager();
 });
