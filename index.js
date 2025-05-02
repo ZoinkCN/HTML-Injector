@@ -194,7 +194,7 @@ function onMutation(mutations) {
 
 // Initialize the extension
 jQuery(async () => {
-  const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
+  const settingsHtml = await $.get(`${extensionFolderPath}/settings.html`);
   $("#extensions_settings").append(settingsHtml);
 
   // Bind event listeners
