@@ -47,6 +47,7 @@ function onSettingChange(event) {
   const key = target.attr("id");
   const value = target.is(":checkbox") ? target.prop("checked") : parseFloat(target.val());
   saveSetting(key, value);
+  injectHtmlCode();
 }
 
 // 事件监听器
@@ -56,13 +57,12 @@ function onEnabledChange(event) {
   const key = target.attr("id");
   const value = target.prop("checked");
   saveSetting(key, value);
-  injectHtmlCode();
   // 处理 iframe 的高度
   if (value) {
+    injectHtmlCode();
     observer = new DomChangeObserver.observe(elementToObserve, onMutation);
   }
   else {
-    removeInjectedIframes();
 
     if (observer) {
       observer.disconnect();
@@ -82,6 +82,8 @@ function adjustIframeHeight(iframe) {
 
 // 主要的注入函数
 function injectHtmlCode(specificMesText = null) {
+  if (!extension_settings[extensionName].isInjectionEnabled) return;
+  removeInjectedIframes();
   const mesTextElements = specificMesText ? [specificMesText] : Array.from(document.getElementsByClassName('mes_text'));
 
   // 根据激活楼层设置筛选要处理的元素
