@@ -216,7 +216,7 @@ function removeInjectedIframes(specificMesText = null) {
 function onMutation(mutations) {
   if (!extension_settings[extensionName].isInjectionEnabled) return;
 
-  const mesTextElements = elementToObserve.getElementsByClassName('mes_text');
+  const mesTextElements = Array.from(elementToObserve.getElementsByClassName('mes_text'));
 
   let targetElements;
   switch (extension_settings[extensionName].activationMode) {
