@@ -114,6 +114,7 @@ function injectHtmlCode(specificMesText = null) {
 
     for (const codeElement of codeElements) {
       const htmlContent = codeElement.innerText.trim();
+      let targetElement = codeElement.parentElement;
 
       if (htmlContent.startsWith('<') && htmlContent.endsWith('>')) {
         // 创建一个iframe来运行HTML代码
@@ -136,15 +137,15 @@ function injectHtmlCode(specificMesText = null) {
           const summary = document.createElement('summary');
           summary.textContent = '[原代码]';
           details.appendChild(summary);
-          codeElement.parentNode.insertBefore(details, codeElement);
-          details.appendChild(codeElement);
+          codeElement.parentNode.insertBefore(details, targetElement);
+          details.appendChild(targetElement);
+          targetElement = details;
         } else if (extension_settings[extensionName].displayMode === 3) {
-          codeElement.style.display = 'none';
+          targetElement.style.display = 'none';
         }
 
         // 将iframe插入到code元素后面
-        const nodeToInsert = codeElement.parentNode.parentNode;
-        nodeToInsert.insertBefore(iframe, codeElement.parentElement.nextSibling);
+        mesText.insertBefore(iframe, targetElement.nextSibling);
 
         // 初始调整iframe高度
         iframe.onload = function () {
