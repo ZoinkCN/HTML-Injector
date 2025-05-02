@@ -115,6 +115,7 @@ function injectHtmlCode(specificMesText = null) {
     for (const codeElement of codeElements) {
       const htmlContent = codeElement.innerText.trim();
       let targetElement = codeElement.parentElement;
+      targetElement.setAttribute('injected', '');
 
       if (htmlContent.startsWith('<') && htmlContent.endsWith('>')) {
         // 创建一个iframe来运行HTML代码
@@ -169,7 +170,7 @@ function removeInjectedIframes() {
   iframes.forEach(iframe => iframe.remove());
 
   // 恢复原代码显示
-  const codeElements = elementToObserve.querySelectorAll('.mes_text code');
+  const codeElements = elementToObserve.querySelectorAll('.mes_text pre[injected]');
   codeElements.forEach(code => {
     code.style.display = '';
     const details = code.closest('details');
@@ -177,6 +178,7 @@ function removeInjectedIframes() {
       details.parentNode.insertBefore(code, details);
       details.remove();
     }
+    code.removeAttribute('injected');
   });
 }
 
