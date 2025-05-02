@@ -19,6 +19,8 @@ const defaultSettings = {
 };
 const elementToObserve = document.querySelector("#chat");
 
+let observer;
+
 // Load extension settings
 async function loadSettings() {
   extension_settings[extensionName] = extension_settings[extensionName] || {};
@@ -33,6 +35,8 @@ async function loadSettings() {
   $("#customStartFloor").val(extension_settings[extensionName].customStartFloor);
   $("#customEndFloor").val(extension_settings[extensionName].customEndFloor);
   $("#extraHeight").val(extension_settings[extensionName].extraHeight); // 加载 extraHeight
+
+  toggleHtmlInjection(extension_settings[extensionName].isInjectionEnabled);
 }
 
 // Save a specific setting
@@ -50,14 +54,17 @@ function onSettingChange(event) {
   injectHtmlCode();
 }
 
-// 事件监听器
-let observer;
+// Event listener for enabling/disabling the extension
 function onEnabledChange(event) {
   const target = $(event.target);
   const key = target.attr("id");
   const value = target.prop("checked");
   saveSetting(key, value);
   // 处理 iframe 的高度
+  toggleHtmlInjection(value);
+}
+
+function toggleHtmlInjection(value) {
   if (value) {
     injectHtmlCode();
     observer = new DomChangeObserver.observe(elementToObserve, onMutation);
@@ -84,30 +91,30 @@ function adjustIframeHeight(iframe) {
 function isHTML(str) {
   // 先进行一些快速检查，提高性能
   if (typeof str !== 'string' || str.trim() === '') {
-      return false;
+    return false;
   }
 
   // 完整的HTML文档检测
   const htmlDocRegex = /^\s*<!DOCTYPE html>|<html[\s>]|<\/html>|\<head[\s>]|<\/head>|\<body[\s>]|<\/body>/i;
-  
+
   // HTML片段检测
   const htmlFragmentRegex = /<([a-z][a-z0-9]*)[\s>][\s\S]*<\/\1>|<([a-z][a-z0-9]*)[\s\/>]/i;
-  
+
   // 自闭合标签检测
   const selfClosingTagRegex = /<[a-z][a-z0-9]*\s+[^>]*\/>|<(img|br|hr|input|meta|link|base)[\s>]/i;
-  
+
   // 注释检测
   const commentRegex = /<!--[\s\S]*?-->/;
-  
+
   // 属性检测
   const attributeRegex = /<[a-z][a-z0-9]*\s+[^>]*>/i;
-  
+
   // 组合所有正则条件
-  return htmlDocRegex.test(str) || 
-         htmlFragmentRegex.test(str) || 
-         selfClosingTagRegex.test(str) || 
-         commentRegex.test(str) || 
-         attributeRegex.test(str);
+  return htmlDocRegex.test(str) ||
+    htmlFragmentRegex.test(str) ||
+    selfClosingTagRegex.test(str) ||
+    commentRegex.test(str) ||
+    attributeRegex.test(str);
 }
 
 // 主要的注入函数
@@ -243,7 +250,9 @@ function onMutation(mutations) {
     if (mutation.target.nodeType === Node.ELEMENT_NODE && // 确保是元素节点
       mutation.target.matches('div.mes_text') && mutation.type === 'childList' &&
       targetElements.includes(mutation.target)) {
+      observer.disconnect(); // 断开观察器，避免重复注入
       injectHtmlCode(mutation.target);
+      observer.observe(); // 重新连接观察器
     }
   }
 }

@@ -10,6 +10,9 @@ const DomChangeObserver = (function () {
       return {
         disconnect: function () {
           observer.disconnect();
+        },
+        observe: function () {
+          observer.observe(target, options); // 重新启动监听
         }
       };
     } catch (e) {
@@ -42,7 +45,6 @@ const DomChangeObserver = (function () {
       };
       callback([fakeMutation]);
     };
-
     events.forEach(function (event) {
       target.addEventListener(event, handler, false);
     });
@@ -51,6 +53,11 @@ const DomChangeObserver = (function () {
       disconnect: function () {
         events.forEach(function (event) {
           target.removeEventListener(event, handler, false);
+        });
+      },
+      observe: function () {
+        events.forEach(function (event) {
+          target.addEventListener(event, handler, false); // 重新启动监听
         });
       }
     };
@@ -76,6 +83,9 @@ const DomChangeObserver = (function () {
     return {
       disconnect: function () {
         target.detachEvent('onpropertychange', handler);
+      },
+      observe: function () {
+        target.attachEvent('onpropertychange', handler); // 重新启动监听
       }
     };
   }
@@ -100,6 +110,18 @@ const DomChangeObserver = (function () {
     return {
       disconnect: function () {
         clearInterval(timer);
+      },
+      observe: function () {
+        timer = setInterval(function () {
+          if (target.innerHTML !== lastHTML || target.outerHTML !== lastOuterHTML) {
+            lastHTML = target.innerHTML;
+            lastOuterHTML = target.outerHTML;
+            callback([{
+              type: 'polling',
+              target: target
+            }]);
+          }
+        }, interval); // 重新启动监听
       }
     };
   }
