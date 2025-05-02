@@ -181,4 +181,4 @@ const DomChangeObserver = (function () {
   };
 })();
 
-export default DomChangeObserver;
+export {DomChangeObserver};
