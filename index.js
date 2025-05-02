@@ -56,7 +56,8 @@ function onEnabledChange(event) {
   const key = target.attr("id");
   const value = target.prop("checked");
   saveSetting(key, value);
-
+  injectHtmlCode();
+  // 处理 iframe 的高度
   if (value) {
     observer = new DomChangeObserver.observe(elementToObserve, onMutation);
   }
