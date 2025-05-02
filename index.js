@@ -80,11 +80,41 @@ function adjustIframeHeight(iframe) {
   }
 }
 
+// Check if a string is valid HTML
+function isHTML(str) {
+  // 先进行一些快速检查，提高性能
+  if (typeof str !== 'string' || str.trim() === '') {
+      return false;
+  }
+
+  // 完整的HTML文档检测
+  const htmlDocRegex = /^\s*<!DOCTYPE html>|<html[\s>]|<\/html>|\<head[\s>]|<\/head>|\<body[\s>]|<\/body>/i;
+  
+  // HTML片段检测
+  const htmlFragmentRegex = /<([a-z][a-z0-9]*)[\s>][\s\S]*<\/\1>|<([a-z][a-z0-9]*)[\s\/>]/i;
+  
+  // 自闭合标签检测
+  const selfClosingTagRegex = /<[a-z][a-z0-9]*\s+[^>]*\/>|<(img|br|hr|input|meta|link|base)[\s>]/i;
+  
+  // 注释检测
+  const commentRegex = /<!--[\s\S]*?-->/;
+  
+  // 属性检测
+  const attributeRegex = /<[a-z][a-z0-9]*\s+[^>]*>/i;
+  
+  // 组合所有正则条件
+  return htmlDocRegex.test(str) || 
+         htmlFragmentRegex.test(str) || 
+         selfClosingTagRegex.test(str) || 
+         commentRegex.test(str) || 
+         attributeRegex.test(str);
+}
+
 // 主要的注入函数
 function injectHtmlCode(specificMesText = null) {
   if (!extension_settings[extensionName].isInjectionEnabled) return;
-  removeInjectedIframes();
-  const mesTextElements = specificMesText ? [specificMesText] : Array.from(document.getElementsByClassName('mes_text'));
+  removeInjectedIframes(specificMesText);
+  const mesTextElements = specificMesText ? [specificMesText] : Array.from(elementToObserve.getElementsByClassName('mes_text'));
 
   // 根据激活楼层设置筛选要处理的元素
   let targetElements;
@@ -113,11 +143,11 @@ function injectHtmlCode(specificMesText = null) {
     const codeElements = mesText.getElementsByTagName('code');
 
     for (const codeElement of codeElements) {
-      const htmlContent = codeElement.innerText.trim();
+      const content = codeElement.innerText.trim();
       let targetElement = codeElement.parentElement;
-      targetElement.setAttribute('injected', '');
 
-      if (htmlContent.startsWith('<') && htmlContent.endsWith('>')) {
+      if (isHTML(content) && !targetElement.hasAttribute('injected')) {
+        targetElement.setAttribute('injected', '');
         // 创建一个iframe来运行HTML代码
         const iframe = document.createElement('iframe');
 
@@ -130,7 +160,7 @@ function injectHtmlCode(specificMesText = null) {
         iframe.style.marginTop = '10px';
 
         // 设置 iframe 的内容
-        iframe.srcdoc = htmlContent;
+        iframe.srcdoc = content;
 
         // 根据显示模式处理原代码
         if (extension_settings[extensionName].displayMode === 2) {
@@ -138,7 +168,7 @@ function injectHtmlCode(specificMesText = null) {
           const summary = document.createElement('summary');
           summary.textContent = '[原代码]';
           details.appendChild(summary);
-          codeElement.parentNode.insertBefore(details, targetElement);
+          mesText.insertBefore(details, targetElement);
           details.appendChild(targetElement);
           targetElement = details;
         } else if (extension_settings[extensionName].displayMode === 3) {
@@ -165,8 +195,9 @@ function injectHtmlCode(specificMesText = null) {
   }
 }
 
-function removeInjectedIframes() {
-  const iframes = elementToObserve.querySelectorAll('.mes_text iframe');
+function removeInjectedIframes(specificMesText = null) {
+  const rootElements = specificMesText ?? elementToObserve;
+  const iframes = rootElements.querySelectorAll('.mes_text iframe');
   iframes.forEach(iframe => iframe.remove());
 
   // 恢复原代码显示
@@ -183,17 +214,36 @@ function removeInjectedIframes() {
 }
 
 function onMutation(mutations) {
+  if (!extension_settings[extensionName].isInjectionEnabled) return;
+
+  const mesTextElements = elementToObserve.getElementsByClassName('mes_text');
+
+  let targetElements;
+  switch (extension_settings[extensionName].activationMode) {
+    case 'first':
+      targetElements = mesTextElements.slice(0, 1);
+      break;
+    case 'last':
+      targetElements = mesTextElements.slice(-1);
+      break;
+    case 'lastN':
+      targetElements = mesTextElements.slice(-extension_settings[extensionName].customEndFloor);
+      break;
+    case 'custom': {
+      const start = extension_settings[extensionName].customStartFloor - 1;
+      const end = extension_settings[extensionName].customEndFloor === -1 ? undefined : extension_settings[extensionName].customEndFloor;
+      targetElements = mesTextElements.slice(start, end);
+      break;
+    }
+    default: // 'all'
+      targetElements = mesTextElements;
+  }
+
   for (const mutation of mutations) {
-    if (mutation.type === 'childList') {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType === Node.ELEMENT_NODE &&
-          (node.classList.contains('mes_text') || node.querySelector('.mes_text'))) {
-          if (extension_settings[extensionName].isInjectionEnabled) {
-            injectHtmlCode();
-          }
-          break;
-        }
-      }
+    if (mutation.target.nodeType === Node.ELEMENT_NODE && // 确保是元素节点
+      mutation.target.matches('div.mes_text') && mutation.type === 'childList' &&
+      targetElements.includes(mutation.target)) {
+      injectHtmlCode(mutation.target);
     }
   }
 }
