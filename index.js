@@ -141,7 +141,8 @@ function injectHtmlCode(specificMesText = null) {
         }
 
         // 将iframe插入到code元素后面
-        codeElement.parentNode.insertBefore(iframe, codeElement.parentElement.nextSibling);
+        const nodeToInsert = codeElement.parentNode.parentNode;
+        nodeToInsert.insertBefore(iframe, codeElement.parentElement.nextSibling);
 
         // 初始调整iframe高度
         iframe.onload = function () {

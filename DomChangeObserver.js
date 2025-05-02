@@ -10,7 +10,6 @@ const DomChangeObserver = (function () {
       return {
         disconnect: function () {
           observer.disconnect();
-          logToPage(`已停止监测 ${target.id || target.className || '元素'}`);
         }
       };
     } catch (e) {
