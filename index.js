@@ -7,7 +7,7 @@ import { saveSettingsDebounced } from "../../../../script.js";
 import { DomChangeObserver } from "./DomChangeObserver.js";
 
 // Extension configuration
-const extensionName = "HtmlInjector";
+const extensionName = "HTML-Injector";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 const defaultSettings = {
   isInjectionEnabled: false,
